@@ -12,7 +12,7 @@ public class Main {
 		garage.add(scaniatruck);
 		
 		for(Vehicle v : garage) {
-			System.out.println("Fuel: " + v.name);
+			System.out.println("Name: " + v.name);
 			System.out.println("Horsepower: " + v.horsePower);
 			System.out.println("Number of passengers: " + v.numberOfPassengers);
 			System.out.println("Fuel: " + v.fuelType);
@@ -21,7 +21,7 @@ public class Main {
 			System.out.println("Korvas");
 			
 			if (v.getClass().equals(Truck.class))
-				System.out.println("CargoVolume: " + ((Truck) v).getCargoVolume());
+				System.out.println("CargoVolume: " + ((Truck) v).getCargoVolume());//sfdafs
 		}
 	}
 }
