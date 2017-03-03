@@ -18,6 +18,7 @@ public class Main {
 			System.out.println("Fuel: " + v.fuelType);
 			System.out.println(""); //Lämna en tom rad
 			System.out.println("Bananus");
+			System.out.println("Korvas");
 			
 			if (v.getClass().equals(Truck.class))
 				System.out.println("CargoVolume: " + ((Truck) v).getCargoVolume());
