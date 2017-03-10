@@ -29,7 +29,7 @@ public class Map implements ImageObserver {
 		//addStonesRandomly();
 		//addZombiesRandomly();
 		
-		mapObjects.addAll(FileHandler.ReadFromFile());
+		//mapObjects.addAll(FileHandler.ReadFromFile());
 		//FileHandler.SaveToFile(mapObjects);
 		
 		for(int rows=0; rows < 10; rows++) {
@@ -38,6 +38,8 @@ public class Map implements ImageObserver {
 				//Gör om till att rita och spara en bild istället
 			}
 		}
+		Zombie z = new Zombie(200, 200, 0.5, Type.ZOMBIE);
+		mapObjects.add(z);
 	}
 
 	public void addTreesRandomly() {

@@ -14,7 +14,7 @@ import inputs.ImageHandler;
 import inputs.Type;
 
 public class Zombie extends AnimatedObject{
-	int health = 100;
+	int health = 1000;
 	int attackDamage = 20;
 	double speed = 1;
 	double actualSpeedX = 0;
@@ -52,15 +52,14 @@ public class Zombie extends AnimatedObject{
 	}
 
 	public boolean update(Coord b) {
-		int vicinity = 400;
+		int vicinity = 200;
 		int offset = 40;
 		int attackDistance = 100;
 		double hypo = Math.hypot(b.getX() - getX(), b.getY() - getY());
 		
-		lastRotation = Game.getAngle(coord, b);
-		
 		if(hypo < vicinity) {
 			Coord dir = Game.getRotation(b, coord);
+			lastRotation = Game.getAngle(coord, b);
 			
 			move(dir.getX()*speed, dir.getY()*speed); //Dra närmare
 			if (hypo < offset) {
@@ -79,7 +78,7 @@ public class Zombie extends AnimatedObject{
 		return moving;
 	}
 
-	public boolean attractTo(Coord b, int vicinity, int offset) { //offset borde egentligen vara w/2*2
+	public boolean attractToooo(Coord b, int vicinity, int offset) { //offset borde egentligen vara w/2*2
 		double hypo = Math.hypot(b.getX() - getX(), b.getY() - getY());
 		
 		lastRotation = Game.getAngle(coord, b);

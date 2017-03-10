@@ -36,6 +36,11 @@ public class Projectile extends AnimatedObject {
 			rotationTarget = null;
 	}
 
+	@Override
+	public int getXpaint() {
+		return (int) (coord.getX() - (width - 10));
+	}
+
 	public boolean isMoving() {
 		return isMoving;
 	}

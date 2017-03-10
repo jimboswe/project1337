@@ -91,7 +91,7 @@ public class AnimatedObject extends StaticObject implements ActionListener{
 
 		gfx.drawImage(ImageHandler.getImage(Type.TABLE),
 				getXpaint(),
-				getYpaint()+offsetPaint,
+				getYpaint() + offsetPaint,
 				getXpaint() + (int) width,
 				getYpaint() + (int) height + offsetPaint,
 				((space * x + (space * currentFrame)) + space) + (64 * x) + (64 * currentFrame),
