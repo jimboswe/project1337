@@ -85,7 +85,7 @@ public class AttachableObject extends AnimatedObject {
 		
 		at.scale(scale, scale);
 		
-		at.translate(-(width-40), -(height/2));
+		at.translate(-(width-30), -(height/2));
 		
 		
 		AffineTransform transform = gfx.getTransform(); // Spara standardrotation innan rotering
@@ -106,7 +106,12 @@ public class AttachableObject extends AnimatedObject {
 
 	@Override
 	public void move(double movex, double movey) {
-		//Ta ej bort
-		//Ej färdigt
+		//System.out.println(attachedTo.getX());
+		if(!attachedTo.isActive()) {
+			if(coord == attachedTo.getCoord()) {
+				coord = new Coord(attachedTo.getX(), attachedTo.getY()); //uppdateras varje gång
+			}
+			super.move(movex, movey);
+		}
 	}
 }

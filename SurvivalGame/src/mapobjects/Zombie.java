@@ -14,7 +14,7 @@ import inputs.ImageHandler;
 import inputs.Type;
 
 public class Zombie extends AnimatedObject{
-	int health = 1000;
+	int health = 100;
 	int attackDamage = 20;
 	double speed = 1;
 	double actualSpeedX = 0;

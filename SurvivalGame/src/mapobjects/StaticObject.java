@@ -13,6 +13,8 @@ public class StaticObject implements ImageObserver {
 	protected double scale;
 	protected Type model;
 	protected double width, height;
+	protected boolean active = true;
+	protected boolean remove = false;
 
 	public StaticObject(double setX, double setY, double setScale, Type setType) {
 		coord = new Coord(setX, setY);
@@ -102,4 +104,22 @@ public class StaticObject implements ImageObserver {
 
 	@Override
 	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {return false;}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isRemove() {
+		return remove;
+	}
+
+	public void setRemove(boolean remove) {
+		if(remove)
+			setActive(false);
+		this.remove = remove;
+	}
 }

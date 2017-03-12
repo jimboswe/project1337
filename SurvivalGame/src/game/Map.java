@@ -162,6 +162,7 @@ public class Map implements ImageObserver {
 								if (checkThisType == Type.ZOMBIE) {
 									Zombie z = (Zombie) it;
 									if (z.changeHealth(-50)) {
+										z.setRemove(true);
 										del.add(z);
 										Game.sound.playNewClip(Sound.getRandomZombieKillSound(), -20);
 
