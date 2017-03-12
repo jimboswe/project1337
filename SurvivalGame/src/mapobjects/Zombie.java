@@ -131,6 +131,10 @@ public class Zombie extends AnimatedObject{
 		gfx.fillRect((int)getX()-3, (int)getY()-3, 6, 6);
 	}
 
+	public int getHealth() {
+		return health;
+	}
+
 	public boolean isMoving() {
 		return moving;
 	}

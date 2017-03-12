@@ -23,8 +23,8 @@ public class ImageHandler implements ImageObserver {
 	}
 
 	public static void init() {
-		TABLE = loadImage(new File("c:\\java\\table.png"));
-		GRASS = loadImage(new File("c:\\java\\grass.png"));
+		TABLE = loadImage(new File("resources\\table.png"));
+		GRASS = loadImage(new File("resources\\grass.png"));
 		
 		img.put(Type.TREE, new ImageCoord(0, 0, 64, 64, 80));
 		img.put(Type.STONE, new ImageCoord(0, 1, 64, 64, 0));

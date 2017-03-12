@@ -1,9 +1,8 @@
-package mapobjects;
+/*package backup;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 import game.Coord;
 import game.Game;
@@ -15,8 +14,7 @@ public class AttachableObject extends AnimatedObject {
 	Zombie attachedTo;
 	double diffAngle;
 	Coord offsetPos;
-	double arrowInitialRotation;
-	double zombieInitialRotation;
+	double testAngle;
 
 	public AttachableObject(Zombie setAttachedTo, double setX, double setY, double setLastRotation, double setScale,
 			Type setType, int setNumberOfFrames, int setNumberOfLoops, boolean setLoopOnce, int setStandardFrame,
@@ -25,16 +23,12 @@ public class AttachableObject extends AnimatedObject {
 				false, directLoopStart);
 
 		attachedTo = setAttachedTo;
-		lastRotation = attachedTo.getLastRotation();// + setAttachedTo.getLastRotation();
+		lastRotation = setLastRotation;// + setAttachedTo.getLastRotation();
 		offsetPos = new Coord(getX()-setAttachedTo.getX(), getY()-setAttachedTo.getY()); //Viktig ordning <<<<<troligen ej rätt
+		testAngle = Game.getAngle(coord, offsetPos);
 		coord = setAttachedTo.getCoord(); //Viktig ordning
 		
 		diffAngle = attachedTo.getLastRotation();
-		
-		arrowInitialRotation = setLastRotation;
-		zombieInitialRotation = attachedTo.getLastRotation();
-		
-		
 		
 		
 		//Pilen hamnar som inte zombien vore roterad
@@ -59,6 +53,19 @@ public class AttachableObject extends AnimatedObject {
 			//System.out.println(toString());
 		}
 		
+		
+		
+		
+		AffineTransform transform = gfx.getTransform(); // Spara standardrotation innan rotering
+
+		if (rotationTarget == null) {
+			if (lastRotation != 0)
+				gfx.rotate(lastRotation + Math.toRadians(-90) + testAngle, getX(), getY());
+		} else {
+			lastRotation = Math.atan2(getY() - rotationTarget.getY(), getX() - rotationTarget.getX()) - Math.PI / 2;
+			gfx.rotate(lastRotation + Math.toRadians(-90), getX(), getY()); //Lägg under istället
+		}
+
 		int x = ImageHandler.getImageCoord(model).getX();
 		int y = ImageHandler.getImageCoord(model).getY();
 		int w = ImageHandler.getImageCoord(model).getWidth();
@@ -70,34 +77,18 @@ public class AttachableObject extends AnimatedObject {
 		else
 			space = 1;
 		
-		BufferedImage image = ImageHandler.getImage(Type.TABLE).getSubimage(
+		gfx.drawImage(ImageHandler.getImage(Type.TABLE),
+				getXpaint(),
+				getYpaint() + offsetPaint,
+				getXpaint() + (int) width,
+				getYpaint() + (int) height + offsetPaint,
 				((space * x + (space * currentFrame)) + space) + (64 * x) + (64 * currentFrame),
 				((space * y) + space) + (64 * y),
-				w,
-				h);
-		
-		
-		AffineTransform at = new AffineTransform(); // Spara standardrotation innan rotering
-		
-		at.translate(getX() + offsetPos.getX(), getY() + offsetPos.getY());
-		
-		at.rotate(arrowInitialRotation + Math.toRadians(-90));
-		
-		at.scale(scale, scale);
-		
-		at.translate(-(width-40), -(height/2));
-		
-		
-		AffineTransform transform = gfx.getTransform(); // Spara standardrotation innan rotering
+				((space * x + (space * currentFrame)) + space) + (64 * x) + (64 * currentFrame) + w,
+				space * y + (64 * y) + h,
+				this);
 
-		if (rotationTarget == null)
-			if (lastRotation != 0)
-				gfx.rotate(lastRotation - zombieInitialRotation, getX(), getY());
-		
-		gfx.drawImage(image, at, null);
-		
 		gfx.setTransform(transform);
-
 		
 		gfx.setColor(Color.CYAN);
 		gfx.fillRect((int)getX()-3, (int)getY()-3, 6, 6);
@@ -109,4 +100,4 @@ public class AttachableObject extends AnimatedObject {
 		//Ta ej bort
 		//Ej färdigt
 	}
-}
+}*/
