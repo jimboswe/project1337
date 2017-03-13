@@ -16,6 +16,9 @@ public enum Sound {
 	Broken_Bones("resources\\sfx\\broken_bones.wav"),
 	Zombie_Long_Death("resources\\sfx\\zombie_long_death.wav"),
 	Zombie_Moan("resources\\sfx\\zombie_moan.wav"),
+	Arrow_Hit1("resources\\sfx\\punch.wav"),
+	Male_Grunt("resources\\sfx\\male_grunt.wav"),
+	
 	Music("resources\\sfx\\menu_music.wav");
 
 	private String path;

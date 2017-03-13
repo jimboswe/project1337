@@ -102,8 +102,7 @@ public class StaticObject implements ImageObserver {
 				+ ", height=" + height + "]";
 	}
 
-	@Override
-	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {return false;}
+
 
 	public boolean isActive() {
 		return active;
@@ -122,4 +121,7 @@ public class StaticObject implements ImageObserver {
 			setActive(false);
 		this.remove = remove;
 	}
+	
+	@Override
+	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {return false;}
 }

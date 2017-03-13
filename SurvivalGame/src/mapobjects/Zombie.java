@@ -12,6 +12,7 @@ import game.Coord;
 import game.Game;
 import inputs.ImageHandler;
 import inputs.Type;
+import soundmodule.Sound;
 
 public class Zombie extends AnimatedObject{
 	int health = 100;
@@ -37,6 +38,7 @@ public class Zombie extends AnimatedObject{
 
 	private void attack() {
 		Game.player.changeHealth(-attackDamage);
+		Game.sound.playNewClip(Sound.Male_Grunt, -20);
 	}
 	
 	public boolean changeHealth(int change) {
@@ -52,7 +54,7 @@ public class Zombie extends AnimatedObject{
 	}
 
 	public boolean update(Coord b) {
-		int vicinity = 200;
+		int vicinity = 300;
 		int offset = 40;
 		int attackDistance = 100;
 		double hypo = Math.hypot(b.getX() - getX(), b.getY() - getY());

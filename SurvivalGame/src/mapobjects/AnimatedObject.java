@@ -19,11 +19,11 @@ public class AnimatedObject extends StaticObject implements ActionListener{
 	protected int currentLoop = 0;
 	protected boolean loopOnce;
 	protected int standardFrame = 0;
+	protected double lastRotation = 0;
 	protected Coord rotationTarget;
 	protected boolean fixedTarget;
 	protected Timer timer;
-
-	protected double lastRotation = 0;
+	
 	public int offsetPaint = 0;
 
 	public AnimatedObject(double setX, double setY, double setScale, Type setType, int setNumberOfFrames, int setNumberOfLoops, boolean setLoopOnce, int setStandardFrame,

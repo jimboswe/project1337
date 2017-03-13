@@ -156,12 +156,15 @@ public class Map implements ImageObserver {
 
 					if (xx > it.getX() - (it.getWidth() / 2) && xx < it.getX() + (it.getWidth() / 2)) {
 						if (yy > it.getY() - (it.getHeight() / 2) && yy < it.getY() + (it.getHeight() / 2)) {
-							if (Math.hypot(xx - it.getX(), yy - it.getY()) < (it.getWidth()/2)-5) {
+							if (Math.hypot(xx - it.getX(), yy - it.getY()) < (it.getWidth()/2)-1) {
 
+								
 								//EJ ALLA TYPER TAS BORT
 								if (checkThisType == Type.ZOMBIE) {
+									Game.sound.playNewClip(Sound.Arrow_Hit1, -20);
 									Zombie z = (Zombie) it;
 									if (z.changeHealth(-50)) {
+										
 										z.setRemove(true);
 										del.add(z);
 										Game.sound.playNewClip(Sound.getRandomZombieKillSound(), -20);
@@ -169,6 +172,9 @@ public class Map implements ImageObserver {
 										add.add(new AnimatedObject(z.getX(), z.getY(), 1, Type.BLOOD, 3, 1, true, 3,
 												new Coord(Game.player.getX(), Game.player.getY()), true, true)); //Lägg till blod
 
+									}
+									else {
+										
 									}
 									add.add(new AttachableObject(z, p.getX(), p.getY(), p.getLastRotation(),
 											p.getScale(), p.getModel(), 1, 0, false, 1, true));
