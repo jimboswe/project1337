@@ -7,7 +7,7 @@ import javax.swing.Timer;
 import game.Coord;
 import inputs.Type;
 
-public class AutoWeapon extends Weapon {
+public class AutoWeapon extends FireArm {
 	Timer fullAutoTimer = null;
 
 	AutoWeapon(double setX, double setY, double setScale, Type setModel, int setNumberOfFrames, int setNumberOfLoops,
@@ -20,9 +20,9 @@ public class AutoWeapon extends Weapon {
 	}
 
 	@Override
-	public void shoot() {
+	public void fire() {
 		if (ready) {
-			super.shoot();
+			super.fire();
 			fullAutoTimer.start();
 			ready = false;
 		}

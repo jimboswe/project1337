@@ -27,13 +27,13 @@ public class Player extends AnimatedObject implements ActionListener {
 				false, false);
 		currentWeapon = WeaponType.BOW;
 
-		Weapon pistol = new Weapon(getX(), getY(), 0.8, Type.PISTOL, 2, 0, false, 1, setRotationTarget, false,
+		Weapon pistol = new FireArm(getX(), getY(), 0.8, Type.PISTOL, 2, 0, false, 1, setRotationTarget, false,
 				WeaponType.PISTOL);
 		pistol.offsetPaint = 8; //För att pistolen ska stämma i förhållande till vart projektilen utgår från
 		inventory.put(WeaponType.PISTOL, pistol);
 
 		inventory.put(WeaponType.BOW,
-				new Weapon(getX(), getY(), 0.8, Type.BOW, 6, 0, false, 6, setRotationTarget, false, WeaponType.BOW));
+				new FireArm(getX(), getY(), 0.8, Type.BOW, 6, 0, false, 6, setRotationTarget, false, WeaponType.BOW));
 		inventory.put(WeaponType.UZI, new AutoWeapon(getX(), getY(), 0.8, Type.UZI, 2, 0, false, 1, setRotationTarget,
 				false, WeaponType.UZI));
 		
@@ -74,7 +74,7 @@ public class Player extends AnimatedObject implements ActionListener {
 	}
 
 	public void shoot() {
-		inventory.get(currentWeapon).shoot();
+		inventory.get(currentWeapon).fire();
 	}
 
 	public void reload() {
