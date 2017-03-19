@@ -1,4 +1,4 @@
-package mapobjects;
+package mapobjects.weapons;
 
 import java.awt.event.ActionEvent;
 
@@ -8,6 +8,7 @@ import game.Coord;
 import game.Game;
 import inputs.InputHandler;
 import inputs.Type;
+import mapobjects.AnimatedObject;
 import soundmodule.Sound;
 
 public class FireArm extends Weapon{
@@ -17,11 +18,8 @@ public class FireArm extends Weapon{
 	Timer recoilTimer = null;
 	Timer reloadTimer = null;
 
-	FireArm(double setX, double setY, double setScale, Type setModel, int setNumberOfFrames, int setNumberOfLoops,
-			boolean setLoopOnce, int setStandardFrame, Coord setRotationTarget, boolean directLoopStart,
-			WeaponType setType) {
-		super(setX, setY, setScale, setModel, setNumberOfFrames, setNumberOfLoops, setLoopOnce, setStandardFrame,
-				setRotationTarget, directLoopStart, setType);
+	public FireArm(double setX, double setY, Coord setRotationTarget, WeaponType setType) {
+		super(setX, setY, setRotationTarget, setType);
 		
 		if(weapon.getRecoil() > 0)
 			recoilTimer = new Timer(recoilTime, this);
@@ -54,12 +52,12 @@ public class FireArm extends Weapon{
 		super.fire();
 		ammo--;
 		
-		Game.addProjectileToMap(Game.player.getCoord(), InputHandler.MOUSE, WeaponType.getProjectile(weapon));
+		Game.addProjectileToMap(Game.player.getCoord(), InputHandler.MOUSE, weapon.getProjectile());
 		
 		if(recoilTimer != null)
 			recoilTimer.start();
 		Coord c = Game.getRotation(Game.player.getCoord(), InputHandler.MOUSE);
-		AnimatedObject o = new AnimatedObject(Game.player.getX()+(c.getX()*80), Game.player.getY()+(c.getY()*80), 0.8, Type.MUZZLEFLASH, 1, 1, true, 2, InputHandler.MOUSE, false, true);
+		AnimatedObject o = new AnimatedObject("", Game.player.getX()+(c.getX()*80), Game.player.getY()+(c.getY()*80), 0.8, Type.MUZZLEFLASH, 1, 1, true, 2, InputHandler.MOUSE, false, true);
 		Game.map.addNewObject(o);
 		//OBS RENSAS EJ UPP
 	}

@@ -1,20 +1,16 @@
-package mapobjects;
+package mapobjects.weapons;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.Timer;
 
 import game.Coord;
-import inputs.Type;
 
 public class AutoWeapon extends FireArm {
 	Timer fullAutoTimer = null;
 
-	AutoWeapon(double setX, double setY, double setScale, Type setModel, int setNumberOfFrames, int setNumberOfLoops,
-			boolean setLoopOnce, int setStandardFrame, Coord setRotationTarget, boolean directLoopStart,
-			WeaponType setType) {
-		super(setX, setY, setScale, setModel, setNumberOfFrames, setNumberOfLoops, setLoopOnce, setStandardFrame,
-				setRotationTarget, directLoopStart, setType);
+	public AutoWeapon(double setX, double setY, Coord setRotationTarget, WeaponType setType) {
+		super(setX, setY, setRotationTarget, setType);
 
 		fullAutoTimer = new Timer(50, this);
 	}

@@ -10,7 +10,7 @@ public class Projectile extends AnimatedObject {
 
 	public Projectile(double setX, double setY, double setSpeedX, double setSpeedY, double setScale, Type setType,
 			int setNumberOfFrames, int setNumberOfLoops, Coord setRotationTarget) {
-		super(setX, setY, setScale, setType, setNumberOfFrames, setNumberOfLoops, false, 1, setRotationTarget, true,
+		super("", setX, setY, setScale, setType, setNumberOfFrames, setNumberOfLoops, false, 1, setRotationTarget, true,
 				true);
 		speedX = setSpeedX;
 		speedY = setSpeedY;

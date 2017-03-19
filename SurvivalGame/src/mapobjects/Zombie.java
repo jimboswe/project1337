@@ -3,7 +3,6 @@ package mapobjects;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 
 import javax.swing.Timer;
@@ -17,14 +16,14 @@ import soundmodule.Sound;
 public class Zombie extends AnimatedObject{
 	int health = 100;
 	int attackDamage = 20;
-	double speed = 1;
+	double speed = 0.5;
 	double actualSpeedX = 0;
 	double actualSpeedY = 0;
 	boolean moving = false;
 	public Timer attackTimer;
 
 	public Zombie(double setX, double setY, double setScale, Type setType) {
-		super(setX, setY, setScale, setType, 1, 0, false, 1, null, false, true);
+		super("", setX, setY, setScale, setType, 1, 0, false, 1, null, false, true);
 		attackTimer = new Timer(1000, this);
 	}
 

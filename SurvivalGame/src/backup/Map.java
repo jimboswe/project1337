@@ -4,31 +4,51 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import inputs.FileHandler;
+import inputs.ImageHandler;
 import inputs.Type;
 import mapobjects.AnimatedObject;
+import mapobjects.AttachableObject;
 import mapobjects.Projectile;
 import mapobjects.StaticObject;
 import mapobjects.Zombie;
 import soundmodule.Sound;
 
 public class Map implements ImageObserver {
-	private int world_size = 10000;
-	private static ArrayList<StaticObject> mapObjects = new ArrayList<StaticObject>();
-	private StaticObject field = new StaticObject(0, 0, 0.5, Type.GRASS);
+	public static int world_size = 10000;
+	//private static ArrayList<StaticObject> mapObjects = new ArrayList<StaticObject>();
+	private LinkedList<StaticObject> field = new LinkedList<StaticObject>();
+	public MapObjectsHandler loot;
 	//private int[][] world = { { world_size }, { world_size } };
 
 	Map() {
-		addTreesRandomly();
-		addStonesRandomly();
-		addZombiesRandomly();
+		loot = new MapObjectsHandler();
+		
+		//addTreesRandomly();
+		//addStonesRandomly();
+		//addZombiesRandomly();
+
+		//mapObjects.addAll(FileHandler.ReadFromFile());
+		//FileHandler.SaveToFile(mapObjects);
+
+		for (int rows = 0; rows < 10; rows++) {
+			for (int cols = 0; cols < 10; cols++) {
+				field.add(new StaticObject("", cols * ImageHandler.getImage(Type.GRASS).getWidth(),
+						rows * ImageHandler.getImage(Type.GRASS).getHeight(), 1, Type.GRASS));
+				//Gör om till att rita och spara en bild istället
+			}
+		}
+		Zombie z = new Zombie(200, 200, 0.5, Type.ZOMBIE);
+		mapObjects.add(z);
 	}
 
 	public void addTreesRandomly() {
 		synchronized (mapObjects) {
 			for (int i = 0; i < 1000; i++) {
-				mapObjects.add(new AnimatedObject(ThreadLocalRandom.current().nextInt(100, world_size + 1),
+				mapObjects.add(new AnimatedObject("Tree", ThreadLocalRandom.current().nextInt(100, world_size + 1),
 						ThreadLocalRandom.current().nextInt(100, world_size + 1), 0.5, Type.TREE, 4, 0, false, 1, null,
 						true, true));
 			}
@@ -38,7 +58,7 @@ public class Map implements ImageObserver {
 	public void addStonesRandomly() {
 		synchronized (mapObjects) {
 			for (int i = 0; i < 1000; i++) {
-				mapObjects.add(new StaticObject(ThreadLocalRandom.current().nextInt(100, world_size + 1),
+				mapObjects.add(new StaticObject("Stone", ThreadLocalRandom.current().nextInt(100, world_size + 1),
 						ThreadLocalRandom.current().nextInt(100, world_size + 1), 0.5, Type.STONE));
 			}
 		}
@@ -48,7 +68,7 @@ public class Map implements ImageObserver {
 		synchronized (mapObjects) {
 			for (int i = 0; i < 1000; i++) {
 				mapObjects.add(new Zombie(ThreadLocalRandom.current().nextInt(100, world_size + 1),
-						ThreadLocalRandom.current().nextInt(100, world_size + 1), 0.5, Type.ZOMBIE, 1, 0, null));
+						ThreadLocalRandom.current().nextInt(100, world_size + 1), 0.5, Type.ZOMBIE));
 			}
 		}
 	}
@@ -60,14 +80,16 @@ public class Map implements ImageObserver {
 	}
 
 	public void paintAllObjects(Graphics2D gfx) {
-		field.paint(gfx);
+		for (StaticObject f : field) {
+			//f.paint(gfx);
+		}
+		loot.paint(gfx);
+		LinkedList<StaticObject> paintAfter = new LinkedList<StaticObject>();
 
 		int trees = 0, stones = 0, zombies = 0, anim = 0;
 		synchronized (mapObjects) {
 			for (StaticObject o : mapObjects) {
-				o.paint(gfx);
-
-				switch (o.getType()) {
+				switch (o.getModel()) {
 				case TREE:
 					trees++;
 					break;
@@ -78,12 +100,22 @@ public class Map implements ImageObserver {
 					zombies++;
 					break;
 				case ARROW:
+					anim++;
 					break;
 				default:
 					break;
 				}
+				if (o.getModel() != Type.BLOOD) {
+					paintAfter.add(o);
+					continue;
+				}
+				o.paint(gfx);
+
 				if (o.getClass().equals(AnimatedObject.class))
 					anim++;
+			}
+			for (StaticObject b : paintAfter) {
+				b.paint(gfx);
 			}
 		}
 		gfx.drawString("Trees: " + String.valueOf(trees), 50, 20);
@@ -101,56 +133,154 @@ public class Map implements ImageObserver {
 		}
 	}
 
-	public ArrayList<StaticObject> checkCollision(Projectile o, Type checkThisType) {
-		ArrayList<StaticObject> del = new ArrayList<StaticObject>();
+	public ArrayList<StaticObject> checkCollision(Projectile p, Type checkThisType, ArrayList<StaticObject> add,
+			ArrayList<StaticObject> del) {
+
 		synchronized (mapObjects) {
 			for (StaticObject it : mapObjects) {
-				if ((o.getX() < it.getX() && o.getX() + o.getSpeedX() > it.getX()) // Kolla om den passerar målet
-						|| (o.getX() > it.getX() && o.getX() + o.getSpeedX() < it.getX())) {
-					if ((o.getY() < it.getY() && o.getY() + o.getSpeedY() > it.getY())
-							|| (o.getY() > it.getY() && o.getY() + o.getSpeedY() < it.getY())) {
-						del.add(it);
-					}
-				}
-			}
-			return del;
-		}
-	}
+				if (!(it.getModel() == checkThisType))
+					continue;
+				if (Math.abs(p.getX() - it.getX()) > 50 || Math.abs(p.getY() - it.getY()) > 50) //Ändra 50
+					continue;
 
-	public void updateWorld(int movex, int movey, Coord player) {
-		field.moveX(movex);
-		field.moveY(movey);
+				double xcos = p.getSpeedX() / 50; //Ändra 50
+				double ysin = p.getSpeedY() / 50; //Ändra 50
 
-		ArrayList<StaticObject> del = new ArrayList<StaticObject>();
-		ArrayList<StaticObject> add = new ArrayList<StaticObject>();
+				double xx = p.getX();
+				double yy = p.getY();
+				double compareX = p.getX();
+				double compareY = p.getY();
 
-		synchronized (mapObjects) {
-			for (StaticObject o : mapObjects) {
-				o.moveX(movex);
-				o.moveY(movey);
-				if (o.getClass().equals(AnimatedObject.class))
-					((AnimatedObject) o).updateTargetLocation(movex, movey);
-				if (o.getClass().equals(Projectile.class) && ((Projectile) o).isMoving()) {
-					((Projectile) o).updateTargetLocation(movex, movey);
-					((Projectile) o).updateMovement();
-					for (StaticObject z : mapObjects) {
-						if (z.getModel() == Type.ZOMBIE) {
-							if ((o.getX() + o.getWidth()) > z.getX() && o.getX() < (z.getX() + z.getWidth())
-									&& (o.getY() + o.getHeight()) > z.getY() && o.getY() < (z.getY() + z.getHeight())) {
-								del.add(z); //Ta bort zombie
-								Game.sound.playNewClip(Sound.getRandomZombieKillSound(), -20);
-								add.add(new AnimatedObject(z.getX(), z.getY(), 1, Type.BLOOD, 3, 1, true, 3,
-										new Coord(player.getX(), player.getY()), true, true)); //Lägg till blod
-								//add.add(new AnimatedObject(z.getX(), z.getY(), 1, Type.EXPLOSION, 16, 1, true, 17, new Coord(player.getX(), player.getY()), true, true)); //Lägg till explosion
+				while (compareX < p.getX() + Math.abs(p.getSpeedX()) && compareY < p.getY() + Math.abs(p.getSpeedY())) {
+					xx += xcos;
+					yy += ysin;
+					compareX += Math.abs(xcos);
+					compareY += Math.abs(ysin);
+
+					if (xx > it.getX() - (it.getWidth() / 2) && xx < it.getX() + (it.getWidth() / 2)) {
+						if (yy > it.getY() - (it.getHeight() / 2) && yy < it.getY() + (it.getHeight() / 2)) {
+							if (Math.hypot(xx - it.getX(), yy - it.getY()) < (it.getWidth()/2)-1) {
+
+								
+								//EJ ALLA TYPER TAS BORT
+								if (checkThisType == Type.ZOMBIE) {
+									Game.sound.playNewClip(Sound.Arrow_Hit1, -20);
+									Zombie z = (Zombie) it;
+									if (z.changeHealth(-50)) {
+										
+										z.setRemove(true);
+										del.add(z);
+										Game.sound.playNewClip(Sound.getRandomZombieKillSound(), -20);
+
+										add.add(new AnimatedObject("", z.getX(), z.getY(), 1, Type.BLOOD, 3, 1, true, 3,
+												new Coord(Game.player.getX(), Game.player.getY()), true, true)); //Lägg till blod
+
+									}
+									else {
+										
+									}
+									add.add(new AttachableObject(z, p.getX(), p.getY(), p.getLastRotation(),
+											p.getScale(), p.getModel(), 1, 0, false, 1, true));
+									del.add(p);
+								}
+								if (checkThisType == Type.TREE) {
+									p.setX(xx);
+									p.setY(yy);
+									p.setMoving(false);
+									p.setRotationTarget(null);
+								}
+								break;
 							}
 						}
 					}
 				}
-				double close = 400;
-				if (o.getModel() == Type.ZOMBIE) {
-					if (Math.hypot(player.getX() - o.getX(), player.getY() - o.getY()) < close)
-						((Zombie) o).attractTo(player, 40);
+			}
+		}
+		return del;
+	}
+
+	public void adjustCollision(StaticObject o, ArrayList<Type> checkTheseTypes, boolean adjustSelf) {
+		for (StaticObject t : mapObjects) {
+			if (o == t) //Om samma som sig själv, hoppa över
+				continue;
+			if (checkTheseTypes.contains(t.getModel())) {
+				double diffX = Math.abs(o.getX() - t.getX());
+				double diffY = Math.abs(o.getY() - t.getY());
+
+				if (diffX < o.getWidth() || diffY < o.getHeight()) { //Ej korrekt
+					if (Math.hypot(diffX, diffY) < o.getWidth()) {
+						Coord rot = Game.getRotation(t.getCoord(), o.getCoord());
+						if (adjustSelf) {
+							o.move(-rot.getX(), -rot.getY());
+						}
+						if (!t.getModel().isFixed()) {
+							t.move(rot.getX(), rot.getY());
+						}
+					}
 				}
+			}
+		}
+	}
+
+	public void centerPlayer(Coord player) {
+		if (Math.abs(player.getX() - Game.WIDTH / 2) < 1 && Math.abs(player.getY() - Game.HEIGHT / 2) < 1) { //Om väldigt nära noll, skippa
+			return;
+		}
+
+		double speed = Game.player.getActualSpeed() * 0.008;
+		Coord c = Game.getRotation(player, new Coord(Game.WIDTH / 2, Game.HEIGHT / 2));
+		c.setX(c.getX() * speed);
+		c.setY(c.getY() * speed);
+
+		for (StaticObject f : field)
+			f.move(-c.getX(), -c.getY());
+
+		Game.player.move(-c.getX(), -c.getY());
+		synchronized (mapObjects) {
+			for (StaticObject o : mapObjects) {
+				o.move(-c.getX(), -c.getY());
+			}
+		}
+	}
+
+	public void updateWorld(int movex, int movey, Coord player) {
+
+		ArrayList<StaticObject> del = new ArrayList<StaticObject>();
+		ArrayList<StaticObject> add = new ArrayList<StaticObject>();
+		ArrayList<Type> check = new ArrayList<Type>();
+		check.add(Type.ZOMBIE);
+		check.add(Type.TREE);
+		check.add(Type.STONE);
+
+		adjustCollision(Game.player, check, true);
+
+		for (StaticObject f : field)
+			f.move(movex, movey);
+		
+		loot.update(movex, movey);
+		LinkedList<StaticObject> nearObjects = loot.getInteractableObjects(player);
+		
+		if(!nearObjects.isEmpty())
+			Game.ui.AddText("interact", "Pick up " + nearObjects.getFirst().getObjectName(), Game.WIDTH/2, Game.HEIGHT/2+50, 20);
+		else
+			Game.ui.DeleteText("interact"); //Eller automatiskt ta bort alla efter varje paint?
+				
+
+		synchronized (mapObjects) {
+			for (StaticObject o : mapObjects) {
+
+				o.move(movex, movey);
+
+				if (o.getClass().equals(Projectile.class) && ((Projectile) o).isMoving()) {
+
+					del.addAll(checkCollision((Projectile) o, Type.ZOMBIE, add, del));
+					checkCollision((Projectile) o, Type.TREE, add, del);
+				}
+				if (o.getModel() == Type.ZOMBIE) {
+					if (((Zombie) o).update(player))
+						adjustCollision((Zombie) o, check, true);
+				}
+
 			}
 			mapObjects.removeAll(del);
 			mapObjects.addAll(add);

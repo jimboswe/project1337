@@ -6,7 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -17,8 +18,8 @@ import inputs.Keys;
 import inputs.Type;
 import mapobjects.Player;
 import mapobjects.StaticObject;
-import mapobjects.WeaponType;
 import mapobjects.Zombie;
+import mapobjects.weapons.WeaponType;
 import soundmodule.Audio;
 
 public class Game extends JPanel implements ActionListener {
@@ -51,7 +52,7 @@ public class Game extends JPanel implements ActionListener {
 		ui = new UI();
 		sound = new Audio();
 		adjustCameraDelayTimer = new Timer(500, this);
-		
+
 	}
 
 	@Override
@@ -71,6 +72,15 @@ public class Game extends JPanel implements ActionListener {
 
 		//gfx.drawLine((int) player.getX(), (int) player.getY(), (int) player.getX() + 60, (int) player.getY());
 
+	}
+
+	public void updateGame() {
+		player.update(input.getMoveX(), input.getMoveY());
+		map.updateWorld(input.getMoveX(), input.getMoveY(), player.getCoord());
+
+		adjustCamera();
+
+		CheckInputs();
 	}
 
 	public void paintComponent(Graphics g) {
@@ -103,23 +113,23 @@ public class Game extends JPanel implements ActionListener {
 		}
 	}
 
-	public void updateGame() {
-		player.update(input.getMoveX(), input.getMoveY());
-		map.updateWorld(input.getMoveX(), input.getMoveY(), player.getCoord());
-
-		adjustCamera();
+	private void CheckInputs() {
 
 		if (input.isLeftMouseButton()) {
-			if(player.getCurrentWeapon() == WeaponType.PISTOL) {
+			if (player.getCurrentWeapon() == WeaponType.PISTOL) {
 				//map.addNewObject(new StaticObject(InputHandler.MOUSE.getX(), InputHandler.MOUSE.getY(), 0.5, Type.TREE));
 				map.addNewObject(new Zombie(InputHandler.MOUSE.getX(), InputHandler.MOUSE.getY(), 0.5, Type.ZOMBIE));
 				input.setLeftMouseButton(false);
-			}
-			else {
+			} else {
 				player.shoot();
 				if (!player.getAuto())
 					input.setLeftMouseButton(false);
 			}
+		}
+
+		if (input.getKeyState(Keys.INTERACT.getKey())) {
+			Interact();
+			input.setKeyState(Keys.INTERACT.getKey(), false);
 		}
 		if (input.getKeyState(Keys.RELOAD.getKey())) {
 			player.reload();
@@ -139,6 +149,16 @@ public class Game extends JPanel implements ActionListener {
 		}
 	}
 
+	private void Interact() {
+		LinkedList<StaticObject> list = map.loot.getInteractableObjects(player.getCoord());
+		if(list.isEmpty())
+			return;
+		
+		player.offerInventory(list.getFirst());
+		map.loot.deleteObjects(list);
+
+	}
+
 	public static void addProjectileToMap(Coord start, Coord target, Type projectile) { //Flytta till map
 		double speed = 5;
 
@@ -147,7 +167,7 @@ public class Game extends JPanel implements ActionListener {
 
 		double speedX = speed * r.getX();
 		double speedY = speed * r.getY();
-		Map.addProjectile(start.getX() + (Math.cos(angle) * 50), start.getY() + (Math.sin(angle) * 50), speedX, speedY,
+		map.addProjectile(start.getX() + (Math.cos(angle) * 50), start.getY() + (Math.sin(angle) * 50), speedX, speedY,
 				target.getX(), target.getY(), projectile);
 	}
 

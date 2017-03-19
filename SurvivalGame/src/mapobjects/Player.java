@@ -4,18 +4,23 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.swing.Timer;
 
 import game.Coord;
 import game.Game;
 import inputs.Type;
+import mapobjects.weapons.AutoWeapon;
+import mapobjects.weapons.MeleeWeapon;
+import mapobjects.weapons.Weapon;
+import mapobjects.weapons.WeaponType;
 
 public class Player extends AnimatedObject implements ActionListener {
 	int health = 2000;
 	
 	
-	private HashMap<WeaponType, Weapon> inventory = new HashMap<WeaponType, Weapon>();
+	private LinkedHashMap<WeaponType, Weapon> inventory = new LinkedHashMap<WeaponType, Weapon>();
 	private WeaponType currentWeapon;
 	public Timer testTimer;
 	Coord lastPos;
@@ -23,19 +28,17 @@ public class Player extends AnimatedObject implements ActionListener {
 	
 	public Player(double setX, double setY, double setScale, Type setType, int setNumberOfFrames, int setNumberOfLoops,
 			Coord setRotationTarget) {
-		super(Game.WIDTH / 2, Game.HEIGHT / 2, setScale, setType, setNumberOfFrames, setNumberOfLoops, false, 1, setRotationTarget,
+		super("", Game.WIDTH / 2, Game.HEIGHT / 2, setScale, setType, setNumberOfFrames, setNumberOfLoops, false, 1, setRotationTarget,
 				false, false);
-		currentWeapon = WeaponType.BOW;
+		currentWeapon = WeaponType.HANDS;
+		inventory.put(WeaponType.HANDS, new MeleeWeapon(getX(), getY(), setRotationTarget, WeaponType.HANDS));
+		
+		//Weapon pistol = new FireArm(getX(), getY(), setRotationTarget, WeaponType.PISTOL);
+		//pistol.offsetPaint = 8; //För att pistolen ska stämma i förhållande till vart projektilen utgår från
+		//inventory.put(WeaponType.PISTOL, pistol);
 
-		Weapon pistol = new FireArm(getX(), getY(), 0.8, Type.PISTOL, 2, 0, false, 1, setRotationTarget, false,
-				WeaponType.PISTOL);
-		pistol.offsetPaint = 8; //För att pistolen ska stämma i förhållande till vart projektilen utgår från
-		inventory.put(WeaponType.PISTOL, pistol);
-
-		inventory.put(WeaponType.BOW,
-				new FireArm(getX(), getY(), 0.8, Type.BOW, 6, 0, false, 6, setRotationTarget, false, WeaponType.BOW));
-		inventory.put(WeaponType.UZI, new AutoWeapon(getX(), getY(), 0.8, Type.UZI, 2, 0, false, 1, setRotationTarget,
-				false, WeaponType.UZI));
+		//inventory.put(WeaponType.BOW, new FireArm(getX(), getY(), setRotationTarget, WeaponType.BOW));
+		//inventory.put(WeaponType.UZI, new AutoWeapon(getX(), getY(), setRotationTarget, WeaponType.UZI));
 		
 		
 		inventory.get(currentWeapon).currentFrame = inventory.get(currentWeapon).standardFrame; //Eh?
@@ -62,8 +65,10 @@ public class Player extends AnimatedObject implements ActionListener {
 	}
 
 	public void update(double dirX, double dirY) {
-		double angle = Math.atan2(getY() - inventory.get(currentWeapon).getRotationTarget().getY(),
-				getX() - inventory.get(currentWeapon).getRotationTarget().getX()) - Math.PI / 2;
+		//double angle = Math.atan2(getY() - inventory.get(currentWeapon).getRotationTarget().getY(),
+		//		getX() - inventory.get(currentWeapon).getRotationTarget().getX()) - Math.PI / 2;
+		double angle = Math.atan2(getY() - rotationTarget.getY(),
+				getX() - rotationTarget.getX()) - Math.PI / 2;
 		angle += Math.toRadians(-90);
 
 		double ax = Math.cos(angle);
@@ -82,16 +87,14 @@ public class Player extends AnimatedObject implements ActionListener {
 	}
 
 	public void switchWeapon(int index) {
-		switch (index) {
-		case 1:
-			currentWeapon = WeaponType.BOW;
-			break;
-		case 2:
-			currentWeapon = WeaponType.PISTOL;
-			break;
-		case 3:
-			currentWeapon = WeaponType.UZI;
-			break;
+		int i = 1;
+		for(WeaponType w : inventory.keySet()) {
+			if(i == index) {
+				currentWeapon = w;
+				break;
+			}
+			else
+				i++;
 		}
 	}
 
@@ -131,5 +134,11 @@ public class Player extends AnimatedObject implements ActionListener {
 	public void move(double movex, double movey) {
 		super.move(movex, movey);
 		updateLastPos(movex, movey);
+	}
+	
+	public void offerInventory(StaticObject item) {
+		inventory.put(((Weapon) item).getWeapon(), (Weapon) item);
+		inventory.get(((Weapon) item).getWeapon()).setRotationTarget(rotationTarget);
+		currentWeapon = ((Weapon) item).getWeapon();
 	}
 }

@@ -2,7 +2,7 @@ package soundmodule;
 
 import java.util.Random;
 
-import mapobjects.WeaponType;
+import mapobjects.weapons.WeaponType;
 
 public enum Sound {
 	Click("resources\\sfx\\click_empty_pistol.wav"),

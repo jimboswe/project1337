@@ -1,8 +1,8 @@
-package mapobjects;
+package mapobjects.weapons;
 
 import game.Coord;
 import game.Game;
-import inputs.Type;
+import mapobjects.AnimatedObject;
 import soundmodule.Sound;
 
 public class Weapon extends AnimatedObject{
@@ -14,10 +14,9 @@ public class Weapon extends AnimatedObject{
 	int noise = 200;
 	boolean firing = false;
 
-	Weapon(double setX, double setY, double setScale, Type setModel, int setNumberOfFrames, int setNumberOfLoops,
-			boolean setLoopOnce, int setStandardFrame, Coord setRotationTarget, boolean directLoopStart, WeaponType setType) {
-		super(setX, setY, setScale, setModel, setNumberOfFrames, setNumberOfLoops, setLoopOnce, setStandardFrame,
-				setRotationTarget, false, directLoopStart);
+	public Weapon(double setX, double setY, Coord setRotationTarget, WeaponType setType) {
+		super("", setX, setY, setType.getScale(), setType.getModel(), setType.getNumberOfFrames(), 0, false, setType.getStandardFrame(),
+				setRotationTarget, false, false);
 		weapon = setType;
 	}
 
@@ -37,5 +36,9 @@ public class Weapon extends AnimatedObject{
 		currentFrame++; //För att få nästa bild direkt
 	}
 	
+	public WeaponType getWeapon() {
+		return weapon;
+	}
+
 	public void reload() {}
 }

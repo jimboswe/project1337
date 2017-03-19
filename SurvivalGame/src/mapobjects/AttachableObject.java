@@ -21,7 +21,7 @@ public class AttachableObject extends AnimatedObject {
 	public AttachableObject(Zombie setAttachedTo, double setX, double setY, double setLastRotation, double setScale,
 			Type setType, int setNumberOfFrames, int setNumberOfLoops, boolean setLoopOnce, int setStandardFrame,
 			boolean directLoopStart) {
-		super(setX, setY, setScale, setType, setNumberOfFrames, setNumberOfLoops, setLoopOnce, setStandardFrame, null,
+		super("", setX, setY, setScale, setType, setNumberOfFrames, setNumberOfLoops, setLoopOnce, setStandardFrame, null,
 				false, directLoopStart);
 
 		attachedTo = setAttachedTo;

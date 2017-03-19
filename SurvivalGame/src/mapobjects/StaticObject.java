@@ -9,14 +9,17 @@ import inputs.ImageHandler;
 import inputs.Type;
 
 public class StaticObject implements ImageObserver {
+	protected String objectName;
 	protected Coord coord;
 	protected double scale;
 	protected Type model;
 	protected double width, height;
 	protected boolean active = true;
 	protected boolean remove = false;
+	
 
-	public StaticObject(double setX, double setY, double setScale, Type setType) {
+	public StaticObject(String setObjectName, double setX, double setY, double setScale, Type setType) {
+		objectName = setObjectName;
 		coord = new Coord(setX, setY);
 		scale = setScale;
 		model = setType;
@@ -124,4 +127,9 @@ public class StaticObject implements ImageObserver {
 	
 	@Override
 	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {return false;}
+
+	public String getObjectName() {
+		// TODO Auto-generated method stub
+		return objectName;
+	}
 }

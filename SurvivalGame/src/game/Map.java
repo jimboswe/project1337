@@ -18,13 +18,15 @@ import mapobjects.Zombie;
 import soundmodule.Sound;
 
 public class Map implements ImageObserver {
-	private int world_size = 10000;
-	private static ArrayList<StaticObject> mapObjects = new ArrayList<StaticObject>();
+	public static int world_size = 10000;
+	//private static ArrayList<StaticObject> mapObjects = new ArrayList<StaticObject>();
 	private LinkedList<StaticObject> field = new LinkedList<StaticObject>();
-
+	public MapObjectsHandler loot;
 	//private int[][] world = { { world_size }, { world_size } };
 
 	Map() {
+		loot = new MapObjectsHandler();
+		
 		//addTreesRandomly();
 		//addStonesRandomly();
 		//addZombiesRandomly();
@@ -34,19 +36,20 @@ public class Map implements ImageObserver {
 
 		for (int rows = 0; rows < 10; rows++) {
 			for (int cols = 0; cols < 10; cols++) {
-				field.add(new StaticObject(cols * ImageHandler.getImage(Type.GRASS).getWidth(),
+				field.add(new StaticObject("", cols * ImageHandler.getImage(Type.GRASS).getWidth(),
 						rows * ImageHandler.getImage(Type.GRASS).getHeight(), 1, Type.GRASS));
 				//Gör om till att rita och spara en bild istället
 			}
 		}
 		Zombie z = new Zombie(200, 200, 0.5, Type.ZOMBIE);
-		mapObjects.add(z);
+		loot.addObject(z);
 	}
 
+	/*
 	public void addTreesRandomly() {
 		synchronized (mapObjects) {
 			for (int i = 0; i < 1000; i++) {
-				mapObjects.add(new AnimatedObject(ThreadLocalRandom.current().nextInt(100, world_size + 1),
+				mapObjects.add(new AnimatedObject("Tree", ThreadLocalRandom.current().nextInt(100, world_size + 1),
 						ThreadLocalRandom.current().nextInt(100, world_size + 1), 0.5, Type.TREE, 4, 0, false, 1, null,
 						true, true));
 			}
@@ -56,7 +59,7 @@ public class Map implements ImageObserver {
 	public void addStonesRandomly() {
 		synchronized (mapObjects) {
 			for (int i = 0; i < 1000; i++) {
-				mapObjects.add(new StaticObject(ThreadLocalRandom.current().nextInt(100, world_size + 1),
+				mapObjects.add(new StaticObject("Stone", ThreadLocalRandom.current().nextInt(100, world_size + 1),
 						ThreadLocalRandom.current().nextInt(100, world_size + 1), 0.5, Type.STONE));
 			}
 		}
@@ -70,71 +73,81 @@ public class Map implements ImageObserver {
 			}
 		}
 	}
+	*/
 
 	public void addNewObject(StaticObject o) {
-		synchronized (mapObjects) {
-			mapObjects.add(o);
+			loot.addObject(o);
+	}
+	
+	class count {
+		private int trees = 0, stones = 0, zombies = 0, anim = 0;
+		
+		count() {}
+		
+		public void add(Type type) {
+			switch (type) {
+			case TREE:
+				trees++;
+				break;
+			case STONE:
+				stones++;
+				break;
+			case ZOMBIE:
+				zombies++;
+				break;
+			case ARROW:
+				anim++;
+				break;
+			default:
+				break;
+			}
+
+			if (type.getClass().equals(AnimatedObject.class))
+				anim++;
 		}
+		
+		public void drawInfo(Graphics2D gfx) {
+			gfx.drawString("Trees: " + String.valueOf(trees), 50, 20);
+			gfx.drawString("Stones: " + String.valueOf(stones), 50, 40);
+			gfx.drawString("Zombies: " + String.valueOf(zombies), 50, 60);
+			gfx.drawString("Animated Objects: " + String.valueOf(anim), 50, 80);
+		}
+		
 	}
 
 	public void paintAllObjects(Graphics2D gfx) {
 		for (StaticObject f : field) {
 			//f.paint(gfx);
 		}
+		//loot.paint(gfx); //Dubbel
 		LinkedList<StaticObject> paintAfter = new LinkedList<StaticObject>();
 
-		int trees = 0, stones = 0, zombies = 0, anim = 0;
-		synchronized (mapObjects) {
-			for (StaticObject o : mapObjects) {
-				switch (o.getModel()) {
-				case TREE:
-					trees++;
-					break;
-				case STONE:
-					stones++;
-					break;
-				case ZOMBIE:
-					zombies++;
-					break;
-				case ARROW:
-					anim++;
-					break;
-				default:
-					break;
-				}
+		count counter = new count();
+			for (StaticObject o : loot.getAllObjects()) {
+				
+				counter.add(o.getModel());
+				
 				if (o.getModel() != Type.BLOOD) {
 					paintAfter.add(o);
 					continue;
 				}
 				o.paint(gfx);
-
-				if (o.getClass().equals(AnimatedObject.class))
-					anim++;
+				
 			}
 			for (StaticObject b : paintAfter) {
 				b.paint(gfx);
 			}
-		}
-		gfx.drawString("Trees: " + String.valueOf(trees), 50, 20);
-		gfx.drawString("Stones: " + String.valueOf(stones), 50, 40);
-		gfx.drawString("Zombies: " + String.valueOf(zombies), 50, 60);
-		gfx.drawString("Animated Objects: " + String.valueOf(anim), 50, 80);
-
+		counter.drawInfo(gfx);
 	}
 
-	public static void addProjectile(double setX, double setY, double speedX, double speedY, double targetX,
-			double targetY, Type projectile) {
-		synchronized (mapObjects) {
-			mapObjects.add(
-					new Projectile(setX, setY, speedX, speedY, 0.8, projectile, 1, 0, new Coord(targetX, targetY)));
-		}
+	public void addProjectile(double setX, double setY, double speedX, double speedY, double targetX, double targetY, Type projectile) {
+			loot.addObject(new Projectile(setX, setY, speedX, speedY, 0.8, projectile, 1, 0, new Coord(targetX, targetY)));
 	}
 
 	public ArrayList<StaticObject> checkCollision(Projectile p, Type checkThisType, ArrayList<StaticObject> add,
 			ArrayList<StaticObject> del) {
 
-		synchronized (mapObjects) {
-			for (StaticObject it : mapObjects) {
+			for (StaticObject it : loot.getAllObjects()) {
 				if (!(it.getModel() == checkThisType))
 					continue;
 				if (Math.abs(p.getX() - it.getX()) > 50 || Math.abs(p.getY() - it.getY()) > 50) //Ändra 50
@@ -169,7 +182,7 @@ public class Map implements ImageObserver {
 										del.add(z);
 										Game.sound.playNewClip(Sound.getRandomZombieKillSound(), -20);
 
-										add.add(new AnimatedObject(z.getX(), z.getY(), 1, Type.BLOOD, 3, 1, true, 3,
+										add.add(new AnimatedObject("", z.getX(), z.getY(), 1, Type.BLOOD, 3, 1, true, 3,
 												new Coord(Game.player.getX(), Game.player.getY()), true, true)); //Lägg till blod
 
 									}
@@ -192,12 +205,11 @@ public class Map implements ImageObserver {
 					}
 				}
 			}
-		}
 		return del;
 	}
 
 	public void adjustCollision(StaticObject o, ArrayList<Type> checkTheseTypes, boolean adjustSelf) {
-		for (StaticObject t : mapObjects) {
+		for (StaticObject t : loot.getAllObjects()) {
 			if (o == t) //Om samma som sig själv, hoppa över
 				continue;
 			if (checkTheseTypes.contains(t.getModel())) {
@@ -233,11 +245,10 @@ public class Map implements ImageObserver {
 			f.move(-c.getX(), -c.getY());
 
 		Game.player.move(-c.getX(), -c.getY());
-		synchronized (mapObjects) {
-			for (StaticObject o : mapObjects) {
+		
+			for (StaticObject o : loot.getAllObjects()) {
 				o.move(-c.getX(), -c.getY());
 			}
-		}
 	}
 
 	public void updateWorld(int movex, int movey, Coord player) {
@@ -253,9 +264,17 @@ public class Map implements ImageObserver {
 
 		for (StaticObject f : field)
 			f.move(movex, movey);
+		
+		loot.update(movex, movey);
+		LinkedList<StaticObject> nearObjects = loot.getInteractableObjects(player);
+		
+		if(!nearObjects.isEmpty())
+			Game.ui.AddText("interact", "Pick up " + nearObjects.getFirst().getObjectName(), Game.WIDTH/2, Game.HEIGHT/2+50, 20);
+		else
+			Game.ui.DeleteText("interact"); //Eller automatiskt ta bort alla efter varje paint?
+				
 
-		synchronized (mapObjects) {
-			for (StaticObject o : mapObjects) {
+			for (StaticObject o : loot.getAllObjects()) {
 
 				o.move(movex, movey);
 
@@ -270,9 +289,8 @@ public class Map implements ImageObserver {
 				}
 
 			}
-			mapObjects.removeAll(del);
-			mapObjects.addAll(add);
-		}
+			loot.deleteObjects(del);
+			loot.addObjects(add);
 
 	}
 

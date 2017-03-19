@@ -26,9 +26,9 @@ public class AnimatedObject extends StaticObject implements ActionListener{
 	
 	public int offsetPaint = 0;
 
-	public AnimatedObject(double setX, double setY, double setScale, Type setType, int setNumberOfFrames, int setNumberOfLoops, boolean setLoopOnce, int setStandardFrame,
+	public AnimatedObject(String setObjectName, double setX, double setY, double setScale, Type setType, int setNumberOfFrames, int setNumberOfLoops, boolean setLoopOnce, int setStandardFrame,
 			Coord setRotationTarget, boolean setFixedTarget, boolean directLoopStart) {
-		super(setX, setY, setScale, setType);
+		super(setObjectName, setX, setY, setScale, setType);
 		numberOfFrames = setNumberOfFrames;
 		numberOfLoops = setNumberOfLoops;
 		loopOnce = setLoopOnce;
