@@ -13,11 +13,13 @@ public class Weapon extends AnimatedObject{
 	double accuracy = 0.9;
 	int noise = 200;
 	boolean firing = false;
+	public int offsetPaint;
 
 	public Weapon(double setX, double setY, Coord setRotationTarget, WeaponType setType) {
 		super(setType.getName(), setX, setY, setType.getScale(), setType.getModel(), setType.getNumberOfFrames(), 0, false, setType.getStandardFrame(),
 				setRotationTarget, false, false);
 		weapon = setType;
+		offsetPaint = setType.getOffsetPaint();
 	}
 
 	public void update(double dirX, double dirY) {
@@ -48,5 +50,10 @@ public class Weapon extends AnimatedObject{
 
 	public int getAmmo() {
 		return ammo;
+	}
+
+	@Override
+	public int getYpaint() {
+		return super.getYpaint() + offsetPaint;
 	}
 }

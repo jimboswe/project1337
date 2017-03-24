@@ -1,6 +1,7 @@
 package mapobjects;
 
 import game.Coord;
+import game.Game;
 import inputs.Type;
 
 public class Projectile extends AnimatedObject {
@@ -26,6 +27,7 @@ public class Projectile extends AnimatedObject {
 					|| (getY() > rotationTarget.getY() && getY() + speedY < rotationTarget.getY())) {
 				setX(rotationTarget.getX());
 				setY(rotationTarget.getY());
+				//Game.map.mapContent.addCollectable(this);
 				isMoving = false;
 			}
 		}

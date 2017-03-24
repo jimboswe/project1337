@@ -23,8 +23,6 @@ public class AnimatedObject extends StaticObject implements ActionListener{
 	protected Coord rotationTarget;
 	protected boolean fixedTarget;
 	protected Timer timer;
-	
-	public int offsetPaint = 0;
 
 	public AnimatedObject(String setObjectName, double setX, double setY, double setScale, Type setType, int setNumberOfFrames, int setNumberOfLoops, boolean setLoopOnce, int setStandardFrame,
 			Coord setRotationTarget, boolean setFixedTarget, boolean directLoopStart) {
@@ -91,9 +89,9 @@ public class AnimatedObject extends StaticObject implements ActionListener{
 
 		gfx.drawImage(ImageHandler.getImage(Type.TABLE),
 				getXpaint(),
-				getYpaint() + offsetPaint,
+				getYpaint(),
 				getXpaint() + (int) width,
-				getYpaint() + (int) height + offsetPaint,
+				getYpaint() + (int) height,
 				((space * x + (space * currentFrame)) + space) + (64 * x) + (64 * currentFrame),
 				((space * y) + space) + (64 * y),
 				((space * x + (space * currentFrame)) + space) + (64 * x) + (64 * currentFrame) + w,

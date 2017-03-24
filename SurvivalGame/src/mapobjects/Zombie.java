@@ -64,7 +64,7 @@ public class Zombie extends AnimatedObject{
 			
 			move(dir.getX()*speed, dir.getY()*speed); //Dra närmare
 			if (hypo < offset) {
-				move(-dir.getX(), -dir.getY()); //Stöt ifrån
+				move(-dir.getX()*speed, -dir.getY()*speed); //Stöt ifrån
 			}
 			if(hypo < attackDistance)
 				attackTimer.start();
