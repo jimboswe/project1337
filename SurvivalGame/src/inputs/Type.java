@@ -1,13 +1,30 @@
 package inputs;
 
 public enum Type {
-	TABLE(true), GRASS(true), ZOMBIE(false), STONE(true), ARROW(false), TREE(true), BOW(false), BLOOD(true), EXPLOSION(
-			true), PISTOL(false), BULLET(false), MUZZLEFLASH(true), UZI(false);
+	TABLE(true, null),
+	GRASS(true, null),
+	ZOMBIE(false, ObjectType.CREATURE),
+	STONE(true, ObjectType.HARVESTABLE),
+	ARROW(false, ObjectType.PROJECTILE),
+	TREE(true, ObjectType.HARVESTABLE),
+	BOW(false, ObjectType.COLLECTABLE),
+	BLOOD(true, ObjectType.VISUAL),
+	EXPLOSION(true, ObjectType.VISUAL),
+	PISTOL(false, ObjectType.COLLECTABLE),
+	BULLET(false, ObjectType.PROJECTILE),
+	MUZZLEFLASH(true, ObjectType.VISUAL),
+	UZI(false, ObjectType.COLLECTABLE);
 
 	boolean fixed;
+	ObjectType objectType;
 
-	private Type(boolean setFixed) {
+	private Type(boolean setFixed, ObjectType setObjectType) {
 		this.fixed = setFixed;
+		this.objectType = setObjectType;
+	}
+
+	public ObjectType getObjectType() {
+		return objectType;
 	}
 
 	public boolean isFixed() {

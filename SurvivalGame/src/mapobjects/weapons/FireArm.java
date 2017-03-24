@@ -33,7 +33,7 @@ public class FireArm extends Weapon{
 			includeRecoil = weapon.getRecoil();
 		
 		super.update(dirX, dirY);
-		move(-(dirX*includeRecoil), -(dirY*includeRecoil));
+		move(dirX*includeRecoil, dirY*includeRecoil);
 		
 		if(reloadTimer.isRunning())
 			Game.ui.AddText("ammo", "Reloading...", 10, 720, 20);
@@ -58,7 +58,7 @@ public class FireArm extends Weapon{
 			recoilTimer.start();
 		Coord c = Game.getRotation(Game.player.getCoord(), InputHandler.MOUSE);
 		AnimatedObject o = new AnimatedObject("", Game.player.getX()+(c.getX()*80), Game.player.getY()+(c.getY()*80), 0.8, Type.MUZZLEFLASH, 1, 1, true, 2, InputHandler.MOUSE, false, true);
-		Game.map.addNewObject(o);
+		Game.map.mapContent.addVisual(o);
 		//OBS RENSAS EJ UPP
 	}
 	

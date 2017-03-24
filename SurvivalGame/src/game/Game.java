@@ -7,7 +7,6 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -19,7 +18,6 @@ import inputs.Type;
 import mapobjects.Player;
 import mapobjects.StaticObject;
 import mapobjects.Zombie;
-import mapobjects.weapons.WeaponType;
 import soundmodule.Audio;
 
 public class Game extends JPanel implements ActionListener {
@@ -73,16 +71,7 @@ public class Game extends JPanel implements ActionListener {
 		//gfx.drawLine((int) player.getX(), (int) player.getY(), (int) player.getX() + 60, (int) player.getY());
 
 	}
-
-	public void updateGame() {
-		player.update(input.getMoveX(), input.getMoveY());
-		map.updateWorld(input.getMoveX(), input.getMoveY(), player.getCoord());
-
-		adjustCamera();
-
-		CheckInputs();
-	}
-
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -95,6 +84,17 @@ public class Game extends JPanel implements ActionListener {
 		paintTest(gfx);
 		ui.paint(gfx);
 	}
+
+	public void updateGame() {
+		player.update(input.getMoveX(), input.getMoveY());
+		map.updateWorld(input.getMoveX(), input.getMoveY(), player.getCoord());
+
+		adjustCamera();
+
+		CheckInputs();
+	}
+
+
 
 	private void adjustCamera() {
 		if (player.getX() > (WIDTH / 2) + 1 || player.getX() < (WIDTH / 2) - 1
@@ -116,16 +116,16 @@ public class Game extends JPanel implements ActionListener {
 	private void CheckInputs() {
 
 		if (input.isLeftMouseButton()) {
-			if (player.getCurrentWeapon() == WeaponType.PISTOL) {
-				//map.addNewObject(new StaticObject(InputHandler.MOUSE.getX(), InputHandler.MOUSE.getY(), 0.5, Type.TREE));
-				map.addNewObject(new Zombie(InputHandler.MOUSE.getX(), InputHandler.MOUSE.getY(), 0.5, Type.ZOMBIE));
-				input.setLeftMouseButton(false);
-			} else {
-				player.shoot();
+			player.shoot();
 				if (!player.getAuto())
 					input.setLeftMouseButton(false);
-			}
 		}
+		
+		if (input.isRightMouseButton()) {
+			map.mapContent.addCreature(new Zombie(InputHandler.MOUSE.getX(), InputHandler.MOUSE.getY(), 0.5, Type.ZOMBIE));
+			input.setRightMouseButton(false);
+		}
+		
 
 		if (input.getKeyState(Keys.INTERACT.getKey())) {
 			Interact();
@@ -147,27 +147,52 @@ public class Game extends JPanel implements ActionListener {
 			player.switchWeapon(3);
 			input.setKeyState(Keys.THREE.getKey(), false);
 		}
+		if (input.getKeyState(Keys.FOUR.getKey())) {
+			player.switchWeapon(4);
+			input.setKeyState(Keys.FOUR.getKey(), false);
+		}
+		if (input.getKeyState(Keys.FIVE.getKey())) {
+			player.switchWeapon(5);
+			input.setKeyState(Keys.FIVE.getKey(), false);
+		}
+		if (input.getKeyState(Keys.SIX.getKey())) {
+			player.switchWeapon(6);
+			input.setKeyState(Keys.SIX.getKey(), false);
+		}
+		if (input.getKeyState(Keys.SEVEN.getKey())) {
+			player.switchWeapon(7);
+			input.setKeyState(Keys.SEVEN.getKey(), false);
+		}
+		if (input.getKeyState(Keys.EIGHT.getKey())) {
+			player.switchWeapon(8);
+			input.setKeyState(Keys.EIGHT.getKey(), false);
+		}
+		if (input.getKeyState(Keys.NINE.getKey())) {
+			player.switchWeapon(9);
+			input.setKeyState(Keys.NINE.getKey(), false);
+		}
 	}
 
 	private void Interact() {
-		LinkedList<StaticObject> list = map.loot.getInteractableObjects(player.getCoord());
-		if(list.isEmpty())
-			return;
-		
-		player.offerInventory(list.getFirst());
-		map.loot.deleteObjects(list);
-
+		StaticObject ob = map.mapContent.getNearestCollectableObject(player.getCoord());
+		if(ob != null) {
+			player.offerInventory(ob);
+			map.mapContent.delete(ob);
+		}
+		else {
+			ob = map.mapContent.getNearestHarvestableObject(player.getCoord());
+			if(ob != null) {
+				// TODO Lägg in vad som ska hända
+			}
+		}
 	}
 
 	public static void addProjectileToMap(Coord start, Coord target, Type projectile) { //Flytta till map
 		double speed = 5;
 
-		Coord r = getRotation(start, target);
-		double angle = getAngle(start, target);
+		Coord dir = getRotation(start, target);
 
-		double speedX = speed * r.getX();
-		double speedY = speed * r.getY();
-		map.addProjectile(start.getX() + (Math.cos(angle) * 50), start.getY() + (Math.sin(angle) * 50), speedX, speedY,
+		map.addProjectile(start.getX() + (dir.getX() * 20), start.getY() + (dir.getY() * 20), speed * dir.getX(), speed * dir.getY(),
 				target.getX(), target.getY(), projectile);
 	}
 
@@ -178,8 +203,10 @@ public class Game extends JPanel implements ActionListener {
 	}
 
 	public static Coord getRotation(Coord start, Coord target) {
-		double angle = Math.atan2(start.getY() - target.getY(), start.getX() - target.getX()) - Math.PI / 2;
-		angle += Math.toRadians(-90);
+		if(start.getX() == target.getX() && start.getY() == target.getY())
+			return new Coord(0,0);
+		
+		double angle = getAngle(start, target);
 
 		double ax = Math.cos(angle);
 		double ay = Math.sin(angle);

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import javax.swing.JPanel;
 
 import game.Coord;
+import game.Game;
 
 public class InputHandler extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 4119458751948816070L;
@@ -117,7 +118,7 @@ public class InputHandler extends JPanel implements KeyListener, MouseListener, 
 		case MouseEvent.BUTTON1:
 			leftMouseButton = true;
 			break;
-		case MouseEvent.BUTTON2:
+		case MouseEvent.BUTTON3:
 			rightMouseButton = true;
 			break;
 		}
@@ -129,7 +130,7 @@ public class InputHandler extends JPanel implements KeyListener, MouseListener, 
 		case MouseEvent.BUTTON1:
 			leftMouseButton = false;
 			break;
-		case MouseEvent.BUTTON2:
+		case MouseEvent.BUTTON3:
 			rightMouseButton = false;
 			break;
 		}
@@ -155,12 +156,23 @@ public class InputHandler extends JPanel implements KeyListener, MouseListener, 
 		this.leftMouseButton = state;
 	}
 
-	public int getMoveX() {
-		return moveX;
+	public double getMoveX() {
+		Coord dir = Game.getRotation(Game.player.getCoord(), new Coord(Game.player.getX()+moveX, Game.player.getY()+moveY));
+		return dir.getX()*Game.player.getSpeed();
 	}
 
-	public int getMoveY() {
-		return moveY;
+	public double getMoveY() {
+		Coord dir = Game.getRotation(Game.player.getCoord(), new Coord(Game.player.getX()+moveX, Game.player.getY()+moveY));
+		return dir.getY()*Game.player.getSpeed();
+	}
+
+	public boolean isRightMouseButton() {
+		// TODO Auto-generated method stub
+		return rightMouseButton;
+	}
+	
+	public void setRightMouseButton(boolean rightMouseButton) {
+		this.rightMouseButton = rightMouseButton;
 	}
 
 }

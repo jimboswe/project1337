@@ -17,6 +17,7 @@ import mapobjects.weapons.Weapon;
 import mapobjects.weapons.WeaponType;
 
 public class Player extends AnimatedObject implements ActionListener {
+	double speed = 0.7;
 	int health = 2000;
 	
 	
@@ -32,14 +33,7 @@ public class Player extends AnimatedObject implements ActionListener {
 				false, false);
 		currentWeapon = WeaponType.HANDS;
 		inventory.put(WeaponType.HANDS, new MeleeWeapon(getX(), getY(), setRotationTarget, WeaponType.HANDS));
-		
-		//Weapon pistol = new FireArm(getX(), getY(), setRotationTarget, WeaponType.PISTOL);
 		//pistol.offsetPaint = 8; //För att pistolen ska stämma i förhållande till vart projektilen utgår från
-		//inventory.put(WeaponType.PISTOL, pistol);
-
-		//inventory.put(WeaponType.BOW, new FireArm(getX(), getY(), setRotationTarget, WeaponType.BOW));
-		//inventory.put(WeaponType.UZI, new AutoWeapon(getX(), getY(), setRotationTarget, WeaponType.UZI));
-		
 		
 		inventory.get(currentWeapon).currentFrame = inventory.get(currentWeapon).standardFrame; //Eh?
 		testTimer = new Timer(700, this);
@@ -99,7 +93,7 @@ public class Player extends AnimatedObject implements ActionListener {
 	}
 
 	public boolean getAuto() {
-		if (inventory.get(currentWeapon).getClass().equals(AutoWeapon.class))
+		if (inventory.get(currentWeapon).getClass().equals(AutoWeapon.class)) //TODO Ändra till instanceof?
 			return true;
 		else
 			return false;
@@ -137,8 +131,24 @@ public class Player extends AnimatedObject implements ActionListener {
 	}
 	
 	public void offerInventory(StaticObject item) {
-		inventory.put(((Weapon) item).getWeapon(), (Weapon) item);
-		inventory.get(((Weapon) item).getWeapon()).setRotationTarget(rotationTarget);
-		currentWeapon = ((Weapon) item).getWeapon();
+		if (item instanceof Weapon) {
+			addWeapon((Weapon) item);
+			return;
+		}
+	}
+	
+	public void addWeapon(Weapon item) {
+		if(!inventory.containsKey((item).getWeapon())) {
+			inventory.put((item).getWeapon(), item);
+			inventory.get((item).getWeapon()).setRotationTarget(rotationTarget);
+			currentWeapon = (item).getWeapon();
+		}
+		else {
+			inventory.get((item).getWeapon()).changeAmmo(item.getAmmo());
+		}
+	}
+
+	public double getSpeed() {
+		return speed;
 	}
 }

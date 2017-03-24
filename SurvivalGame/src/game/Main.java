@@ -15,7 +15,7 @@ public class Main {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		int FRAMES_PER_SECOND = 300;
+		int FRAMES_PER_SECOND = 200;
 		int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
 		long next_game_tick = System.currentTimeMillis();
 

@@ -78,26 +78,6 @@ public class Zombie extends AnimatedObject{
 		
 		return moving;
 	}
-
-	public boolean attractToooo(Coord b, int vicinity, int offset) { //offset borde egentligen vara w/2*2
-		double hypo = Math.hypot(b.getX() - getX(), b.getY() - getY());
-		
-		lastRotation = Game.getAngle(coord, b);
-		
-		if(hypo < vicinity) {
-			Coord dir = Game.getRotation(b, coord);
-			
-			move(dir.getX()*speed, dir.getY()*speed); //Dra närmare
-			if (hypo < offset) {
-				move(-dir.getX(), -dir.getY()); //Stöt ifrån
-			}
-			moving = true;
-		}
-		else
-			moving = false;
-		
-		return moving;
-	}
 	
 	public void kill() {
 		attackTimer.stop();
