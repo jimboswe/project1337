@@ -3,7 +3,6 @@ package mapobjects;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.swing.Timer;
@@ -17,7 +16,7 @@ import mapobjects.weapons.Weapon;
 import mapobjects.weapons.WeaponType;
 
 public class Player extends AnimatedObject implements ActionListener {
-	double speed = 0.7;
+	double speed = 1.4;
 	int health = 2000;
 	
 	

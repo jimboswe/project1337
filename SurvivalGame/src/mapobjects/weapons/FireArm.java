@@ -6,6 +6,7 @@ import javax.swing.Timer;
 
 import game.Coord;
 import game.Game;
+import game.Helper;
 import inputs.InputHandler;
 import inputs.Type;
 import mapobjects.AnimatedObject;
@@ -43,6 +44,7 @@ public class FireArm extends Weapon{
 			Game.ui.AddText("ammo", "Press R to reload", 10, 720, 20);
 	}
 	
+	@Override
 	public void fire() {
 		if (ammo <= 0 || !ready) {
 			Game.sound.playNewClip(Sound.Click, -20);
@@ -52,16 +54,17 @@ public class FireArm extends Weapon{
 		super.fire();
 		ammo--;
 		
-		Game.addProjectileToMap(Game.player.getCoord(), InputHandler.MOUSE, weapon.getProjectile());
+		Helper.addProjectile(Game.player.getCoord(), InputHandler.MOUSE, weapon.getProjectile());
 		
 		if(recoilTimer != null)
 			recoilTimer.start();
-		Coord c = Game.getRotation(Game.player.getCoord(), InputHandler.MOUSE);
+		Coord c = Helper.getRotation(Game.player.getCoord(), InputHandler.MOUSE);
 		AnimatedObject o = new AnimatedObject("", Game.player.getX()+(c.getX()*80), Game.player.getY()+(c.getY()*80), 0.8, Type.MUZZLEFLASH, 1, 1, true, 2, InputHandler.MOUSE, false, true);
 		Game.map.mapContent.addVisual(o);
 		//OBS RENSAS EJ UPP
 	}
 	
+	@Override
 	public void reload() {
 		reloadTimer.start();
 		ready = false;

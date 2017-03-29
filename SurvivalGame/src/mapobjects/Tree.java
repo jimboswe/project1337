@@ -20,9 +20,24 @@ public class Tree extends StaticObject{
 				ThreadLocalRandom.current().nextInt(100, Map.world_size + 1),
 				ThreadLocalRandom.current().nextInt(100, Map.world_size + 1),
 				(double) ThreadLocalRandom.current().nextInt(5, 10 + 1) / 10,
-				Type.TREE);
+				Type.getRandomTreeModel());
 		
 		wood = 100;
 	}
 
+	public int getAmountOfResourcesLeft() {
+		return wood;
+	}
+
+	public int harvest(int harvestAmount) {
+		if(wood < harvestAmount) {
+			harvestAmount = wood;
+			wood = 0;
+			return harvestAmount;
+		}
+		else {
+			wood -= harvestAmount;
+			return harvestAmount;
+		}
+	}
 }

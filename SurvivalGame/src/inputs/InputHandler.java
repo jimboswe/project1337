@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import game.Coord;
 import game.Game;
+import game.Helper;
 
 public class InputHandler extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 4119458751948816070L;
@@ -157,12 +158,12 @@ public class InputHandler extends JPanel implements KeyListener, MouseListener, 
 	}
 
 	public double getMoveX() {
-		Coord dir = Game.getRotation(Game.player.getCoord(), new Coord(Game.player.getX()+moveX, Game.player.getY()+moveY));
+		Coord dir = Helper.getRotation(Game.player.getCoord(), new Coord(Game.player.getX()+moveX, Game.player.getY()+moveY));
 		return dir.getX()*Game.player.getSpeed();
 	}
 
 	public double getMoveY() {
-		Coord dir = Game.getRotation(Game.player.getCoord(), new Coord(Game.player.getX()+moveX, Game.player.getY()+moveY));
+		Coord dir = Helper.getRotation(Game.player.getCoord(), new Coord(Game.player.getX()+moveX, Game.player.getY()+moveY));
 		return dir.getY()*Game.player.getSpeed();
 	}
 

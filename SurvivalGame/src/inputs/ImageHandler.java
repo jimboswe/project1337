@@ -26,8 +26,17 @@ public class ImageHandler implements ImageObserver {
 		TABLE = loadImage(new File("resources\\table.png"));
 		GRASS = loadImage(new File("resources\\grass.png"));
 		
-		img.put(Type.TREE, new ImageCoord(0, 0, 64, 64, 80));
-		img.put(Type.STONE, new ImageCoord(0, 1, 64, 64, 0));
+		img.put(Type.TREE1, new ImageCoord(0, 0, 64, 64, 80));
+		img.put(Type.TREE2, new ImageCoord(4, 0, 64, 64, 80));
+		img.put(Type.TREE3, new ImageCoord(5, 0, 64, 64, 80));
+		img.put(Type.TREE4, new ImageCoord(6, 0, 64, 64, 80));
+		img.put(Type.TREE5, new ImageCoord(7, 0, 64, 64, 80));
+		img.put(Type.TREE6, new ImageCoord(8, 0, 64, 64, 80));
+		img.put(Type.TREE7, new ImageCoord(9, 0, 64, 64, 80));
+		img.put(Type.STONE1, new ImageCoord(0, 1, 64, 64, 0));
+		img.put(Type.STONE2, new ImageCoord(1, 1, 64, 64, 0));
+		img.put(Type.STONE3, new ImageCoord(2, 1, 64, 64, 0));
+		img.put(Type.STONE4, new ImageCoord(3, 1, 64, 64, 0));
 		img.put(Type.ZOMBIE, new ImageCoord(0, 2, 64, 64, 200));
 		img.put(Type.ARROW, new ImageCoord(0, 3, 64, 8, 200));
 		img.put(Type.BOW, new ImageCoord(0, 4, 64, 64, 100));
@@ -83,6 +92,7 @@ public class ImageHandler implements ImageObserver {
 			// the color we are looking for... Alpha bits are set to opaque
 			public int markerRGB = color.getRGB() | 0xFF000000;
 
+			@Override
 			public final int filterRGB(int x, int y, int rgb) {
 				if ((rgb | 0xFF000000) == markerRGB) {
 					// Mark the alpha bits as zero - transparent

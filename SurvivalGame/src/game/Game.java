@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -35,6 +34,7 @@ public class Game extends JPanel implements ActionListener {
 	public static Audio sound;
 	private Timer adjustCameraDelayTimer;
 	boolean adjustCamera = false;
+	public CollisionDetectionManager collisionManager;
 
 	Game() {
 		setFocusable(true);
@@ -50,7 +50,6 @@ public class Game extends JPanel implements ActionListener {
 		ui = new UI();
 		sound = new Audio();
 		adjustCameraDelayTimer = new Timer(500, this);
-
 	}
 
 	@Override
@@ -59,19 +58,11 @@ public class Game extends JPanel implements ActionListener {
 	}
 
 	private void paintTest(Graphics2D gfx) {
-		//double angle = Math.atan2(player.getY() - InputHandler.MOUSE.getY(), player.getX() - InputHandler.MOUSE.getX()) - Math.PI / 2;
-
-		//gfx.drawLine((int) player.getX() + 25, (int) player.getY() + 25, 500 + 10, 500 + 10);
-
 		gfx.drawString(Double.toString(InputHandler.MOUSE.getX()), 50, 150);
 		gfx.drawString(Double.toString(InputHandler.MOUSE.getY()), 50, 170);
-
-		//gfx.rotate(angle + Math.toRadians(-90), player.getX(), player.getY());
-
-		//gfx.drawLine((int) player.getX(), (int) player.getY(), (int) player.getX() + 60, (int) player.getY());
-
 	}
 	
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -93,8 +84,6 @@ public class Game extends JPanel implements ActionListener {
 
 		CheckInputs();
 	}
-
-
 
 	private void adjustCamera() {
 		if (player.getX() > (WIDTH / 2) + 1 || player.getX() < (WIDTH / 2) - 1
@@ -185,32 +174,6 @@ public class Game extends JPanel implements ActionListener {
 				// TODO Lägg in vad som ska hända
 			}
 		}
-	}
-
-	public static void addProjectileToMap(Coord start, Coord target, Type projectile) { //Flytta till map
-		double speed = 5;
-
-		Coord dir = getRotation(start, target);
-
-		map.addProjectile(start.getX() + (dir.getX() * 20), start.getY() + (dir.getY() * 20), speed * dir.getX(), speed * dir.getY(),
-				target.getX(), target.getY(), projectile);
-	}
-
-	public static double getAngle(Coord start, Coord target) {
-		double angle = Math.atan2(start.getY() - target.getY(), start.getX() - target.getX()) - Math.PI / 2;
-		angle += Math.toRadians(-90);
-		return angle;
-	}
-
-	public static Coord getRotation(Coord start, Coord target) {
-		if(start.getX() == target.getX() && start.getY() == target.getY())
-			return new Coord(0,0);
-		
-		double angle = getAngle(start, target);
-
-		double ax = Math.cos(angle);
-		double ay = Math.sin(angle);
-		return new Coord(ax, ay);
 	}
 
 	@Override

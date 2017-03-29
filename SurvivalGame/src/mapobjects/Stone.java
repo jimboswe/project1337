@@ -20,8 +20,25 @@ public class Stone extends StaticObject{
 				ThreadLocalRandom.current().nextInt(100, Map.world_size + 1),
 				ThreadLocalRandom.current().nextInt(100, Map.world_size + 1),
 				(double) ThreadLocalRandom.current().nextInt(5, 10 + 1) / 10,
-				Type.STONE);
+				Type.getRandomStoneModel());
 		
 		stone = 100;
+	}
+
+	public int getAmountOfResourcesLeft() {
+		return stone;
+	}
+
+	public int harvest(int harvestAmount) {
+		// TODO Auto-generated method stub
+		if(stone < harvestAmount) {
+			harvestAmount = stone;
+			stone = 0;
+			return harvestAmount;
+		}
+		else {
+			stone -= harvestAmount;
+			return harvestAmount;
+		}
 	}
 }

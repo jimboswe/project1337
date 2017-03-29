@@ -65,6 +65,7 @@ public class AnimatedObject extends StaticObject implements ActionListener{
 		timer.start();
 	}
 
+	@Override
 	public void paint(Graphics2D gfx) {
 		AffineTransform transform = gfx.getTransform(); // Spara standardrotation innan rotering
 

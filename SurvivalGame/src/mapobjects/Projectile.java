@@ -1,7 +1,6 @@
 package mapobjects;
 
 import game.Coord;
-import game.Game;
 import inputs.Type;
 
 public class Projectile extends AnimatedObject {

@@ -9,6 +9,7 @@ import javax.swing.Timer;
 
 import game.Coord;
 import game.Game;
+import game.Helper;
 import inputs.ImageHandler;
 import inputs.Type;
 import soundmodule.Sound;
@@ -59,8 +60,8 @@ public class Zombie extends AnimatedObject{
 		double hypo = Math.hypot(b.getX() - getX(), b.getY() - getY());
 		
 		if(hypo < vicinity) {
-			Coord dir = Game.getRotation(b, coord);
-			lastRotation = Game.getAngle(coord, b);
+			Coord dir = Helper.getRotation(b, coord);
+			lastRotation = Helper.getAngle(coord, b);
 			
 			move(dir.getX()*speed, dir.getY()*speed); //Dra närmare
 			if (hypo < offset) {

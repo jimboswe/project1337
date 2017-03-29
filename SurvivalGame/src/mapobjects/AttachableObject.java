@@ -6,7 +6,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import game.Coord;
-import game.Game;
 import inputs.ImageHandler;
 import inputs.Type;
 
@@ -33,11 +32,6 @@ public class AttachableObject extends AnimatedObject {
 		
 		arrowInitialRotation = setLastRotation;
 		zombieInitialRotation = attachedTo.getLastRotation();
-		
-		
-		
-		
-		//Pilen hamnar som inte zombien vore roterad
 	}
 
 	@Override

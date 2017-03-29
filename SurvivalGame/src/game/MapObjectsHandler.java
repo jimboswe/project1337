@@ -19,6 +19,7 @@ public class MapObjectsHandler {
 	private ArrayList<StaticObject> projectiles = new ArrayList<StaticObject>();
 
 	public MapObjectsHandler() {
+		createGround();
 	}
 	
 	public void createGround() {
@@ -32,7 +33,7 @@ public class MapObjectsHandler {
 			}
 		}
 	}
-	
+
 	public void moveGround(double mx, double my) {
 		synchronized(ground) {
 			for (StaticObject f : ground)
@@ -251,7 +252,8 @@ public class MapObjectsHandler {
 	public void paintAllObjects(Graphics2D gfx) {
 		synchronized (allObjects) {
 			for (StaticObject o : allObjects) {
-				o.paint(gfx);
+				if(isInsideDisplay(o))
+					o.paint(gfx);
 			}
 		}
 	}
@@ -259,7 +261,8 @@ public class MapObjectsHandler {
 	public void paintCreatures(Graphics2D gfx) {
 		synchronized (creatures) {
 			for (StaticObject o : creatures) {
-				o.paint(gfx);
+				if(isInsideDisplay(o))
+					o.paint(gfx);
 			}
 		}
 	}
@@ -267,7 +270,8 @@ public class MapObjectsHandler {
 	public void paintCollectables(Graphics2D gfx) {
 		synchronized (collectables) {
 			for (StaticObject o : collectables) {
-				o.paint(gfx);
+				if(isInsideDisplay(o))
+					o.paint(gfx);
 			}
 		}
 	}
@@ -275,7 +279,8 @@ public class MapObjectsHandler {
 	public void paintHarvestables(Graphics2D gfx) {
 		synchronized (harvestables) {
 			for (StaticObject o : harvestables) {
-				o.paint(gfx);
+				if(isInsideDisplay(o))
+					o.paint(gfx);
 			}
 		}
 	}
@@ -283,7 +288,8 @@ public class MapObjectsHandler {
 	public void paintVisuals(Graphics2D gfx) {
 		synchronized (visuals) {
 			for (StaticObject o : visuals) {
-				o.paint(gfx);
+				if(isInsideDisplay(o))
+					o.paint(gfx);
 			}
 		}
 	}
@@ -291,9 +297,19 @@ public class MapObjectsHandler {
 	public void paintProjectiles(Graphics2D gfx) {
 		synchronized (projectiles) {
 			for (StaticObject o : projectiles) {
-				o.paint(gfx);
+				if(isInsideDisplay(o))
+					o.paint(gfx);
 			}
 		}
+	}
+	
+	public boolean isInsideDisplay(StaticObject o) {
+		if(o.getX() > 0 && o.getX() < Game.WIDTH) {
+			if(o.getY() > 0 && o.getY() < Game.HEIGHT) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	class count {
@@ -304,10 +320,10 @@ public class MapObjectsHandler {
 
 		public void add(Type type) {
 			switch (type) {
-			case TREE:
+			case TREE1:
 				trees++;
 				break;
-			case STONE:
+			case STONE1:
 				stones++;
 				break;
 			case ZOMBIE:

@@ -44,13 +44,13 @@ public class FileHandler {
 					try {
 						t = Type.getModel((scan.next()));
 						switch (t) {
-						case STONE:
+						case STONE1:
 							list.add(new StaticObject("", Double.valueOf(scan.next()), Double.valueOf(scan.next()), Double.valueOf(scan.next()), t));
 							break;
 						case ZOMBIE:
 							list.add(new Zombie(Double.valueOf(scan.next()), Double.valueOf(scan.next()), Double.valueOf(scan.next()), t));
 							break;
-						case TREE:
+						case TREE1:
 							list.add(new AnimatedObject("", Double.valueOf(scan.next()), Double.valueOf(scan.next()), Double.valueOf(scan.next()), t, 4, 0, false, 1, null, true, true));
 							break;
 						default:
