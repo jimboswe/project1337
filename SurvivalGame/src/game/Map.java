@@ -9,9 +9,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import inputs.Type;
 import mapobjects.Projectile;
 import mapobjects.StaticObject;
-import mapobjects.Stone;
-import mapobjects.Tree;
 import mapobjects.Zombie;
+import mapobjects.nature.Stone;
+import mapobjects.nature.Tree;
 import mapobjects.weapons.AutoWeapon;
 import mapobjects.weapons.FireArm;
 import mapobjects.weapons.WeaponType;
@@ -54,25 +54,7 @@ public class Map implements ImageObserver {
 		mapContent.paintProjectiles(gfx);
 		mapContent.paintCollectables(gfx);
 	}
-
-
-	public void centerPlayer(Coord player) {
-		if (Math.abs(player.getX() - Game.WIDTH / 2) < 1 && Math.abs(player.getY() - Game.HEIGHT / 2) < 1) { //Om väldigt nära noll, skippa
-			return;
-		}
-
-		double speed = Game.player.getActualSpeed() * 0.008;
-		Coord c = Helper.getRotation(player, new Coord(Game.WIDTH / 2, Game.HEIGHT / 2));
-		c.setX(c.getX() * speed);
-		c.setY(c.getY() * speed);
-
-		mapContent.moveGround(-c.getX(), -c.getY());
-
-		Game.player.move(-c.getX(), -c.getY());
-
-		mapContent.update(-c.getX(), -c.getY());
-	}
-
+	
 	public void updateWorld(double movex, double movey, Coord player) {
 		
 		ArrayList<StaticObject> add = new ArrayList<StaticObject>();
@@ -95,6 +77,23 @@ public class Map implements ImageObserver {
 
 		mapContent.delete(del);
 		mapContent.addObjects(add);
+	}
+
+	public void centerCamera(Coord player) {
+		if (Math.abs(player.getX() - Game.WIDTH / 2) < 1 && Math.abs(player.getY() - Game.HEIGHT / 2) < 1) { //Om väldigt nära noll, skippa
+			return;
+		}
+
+		double speed = Game.player.getActualSpeed() * 0.008;
+		Coord c = Helper.getRotation(player, new Coord(Game.WIDTH / 2, Game.HEIGHT / 2));
+		c.setX(c.getX() * speed);
+		c.setY(c.getY() * speed);
+
+		mapContent.moveGround(-c.getX(), -c.getY());
+
+		Game.player.move(-c.getX(), -c.getY());
+
+		mapContent.update(-c.getX(), -c.getY());
 	}
 
 	private void manageCollisions(ArrayList<Type> check, ArrayList<StaticObject> add, ArrayList<StaticObject> del) {

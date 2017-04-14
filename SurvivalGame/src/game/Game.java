@@ -92,7 +92,7 @@ public class Game extends JPanel implements ActionListener {
 		}
 
 		if (adjustCamera)
-			map.centerPlayer(player.getCoord());
+			map.centerCamera(player.getCoord());
 
 		if (player.getX() > (WIDTH / 2) - 1 && player.getX() < (WIDTH / 2) + 1) {
 			if (player.getY() > (HEIGHT / 2) - 1 && player.getY() < (HEIGHT / 2) + 1) {

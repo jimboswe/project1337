@@ -9,11 +9,12 @@ public class Main {
 		JFrame frame = new JFrame("Survive");
 		Game game = new Game();
 		frame.add(game);
-		frame.setLocation((1920 / 2) - (1080 / 2), 100); //Troligtvis ej rätt
 		frame.pack();
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		frame.setLocationRelativeTo(null); //Placera i mitten av skärmen
 
 		int FRAMES_PER_SECOND = 200;
 		int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
